@@ -1,8 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/services/service.dart';
 import 'package:chat/widgets/button.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/labels.dart';
 import 'package:chat/widgets/logo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -53,6 +58,7 @@ class _FormState extends State<_Form> {
   final nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    var authService = Provider.of<AuthService>(context, listen: true);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -79,7 +85,23 @@ class _FormState extends State<_Form> {
             keyboardType: TextInputType.text,
             isPassword: true,
           ),
-          Button(text: 'Ingresar', onPressed: () {})
+          Button(
+              text: 'Crear Cuenta',
+              onPressed: authService.autenticando
+                  ? null
+                  : () async {
+                      final registroOK = await authService.register(
+                          nameController.text.trim(),
+                          emailController.text.trim(),
+                          passowrdController.text.trim());
+
+                      if (registroOK == true) {
+                        Navigator.pushReplacementNamed(context, 'users');
+                      } else {
+                        mostrarAlerta(
+                            context, 'Registro Incorrect', registroOK);
+                      }
+                    })
         ],
       ),
     );

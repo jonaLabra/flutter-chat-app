@@ -1,8 +1,11 @@
+import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/services/service.dart';
 import 'package:chat/widgets/button.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/labels.dart';
 import 'package:chat/widgets/logo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -52,6 +55,7 @@ class _FormState extends State<_Form> {
   final passowrdController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    var authService = Provider.of<AuthService>(context, listen: true);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -71,7 +75,25 @@ class _FormState extends State<_Form> {
             keyboardType: TextInputType.text,
             isPassword: true,
           ),
-          Button(text: 'Ingresar', onPressed: () {})
+          Button(
+              text: 'Ingresar',
+              onPressed: authService.autenticando
+                  ? null
+                  : () async {
+                      FocusScope.of(context).unfocus();
+                      final loginOk = await authService.login(
+                          emailController.text.trim(),
+                          passowrdController.text.trim());
+
+                      if (loginOk) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacementNamed(context, 'users');
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        mostrarAlerta(context, 'Login incorrecto',
+                            'Revisar credenciales');
+                      }
+                    })
         ],
       ),
     );
