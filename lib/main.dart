@@ -1,3 +1,5 @@
+import 'package:chat/services/chat_service.dart';
+import 'package:chat/services/socket-service.dart';
 import 'package:chat/routes/routes.dart';
 import 'package:chat/services/service.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => AuthService())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthService()),
+        ChangeNotifierProvider(create: (context) => SocketService()),
+        ChangeNotifierProvider(create: (context) => ChatService()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Chat Chocokrispis',

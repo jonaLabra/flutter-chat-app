@@ -2,6 +2,7 @@
 
 import 'package:chat/helpers/mostrar_alerta.dart';
 import 'package:chat/services/service.dart';
+import 'package:chat/services/socket-service.dart';
 import 'package:chat/widgets/button.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/labels.dart';
@@ -59,6 +60,7 @@ class _FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     var authService = Provider.of<AuthService>(context, listen: true);
+    var socketService = Provider.of<SocketService>(context, listen: true);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -96,6 +98,7 @@ class _FormState extends State<_Form> {
                           passowrdController.text.trim());
 
                       if (registroOK == true) {
+                        socketService.connect();
                         Navigator.pushReplacementNamed(context, 'users');
                       } else {
                         mostrarAlerta(
